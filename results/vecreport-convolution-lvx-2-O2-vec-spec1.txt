@@ -1,0 +1,47 @@
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:32:5: missed: statement clobbers memory: __asm__ __volatile__("get %0 = $frcc
+	;;" : "=r" c_3 :  : "memory");
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:33:12: note: ***** Analysis failed with vector mode VOID
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:78:23: missed: couldn't vectorize loop
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:78:23: missed: unsupported SLP instances
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:65:23: optimized: loop vectorized using 32 byte vectors and unroll factor 8
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:65:23: optimized: epilogue loop vectorized using masked 32 byte vectors and unroll factor 8
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:49:1: note: vectorized 1 loops in function.
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:51:19: missed: statement clobbers memory: n_38 = conv_n ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:52:19: missed: statement clobbers memory: m_40 = conv_m ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:55:18: missed: statement clobbers memory: image_43 = malloc (_3);
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:56:16: missed: statement clobbers memory: out_45 = malloc (_6);
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:70:25: missed: statement clobbers memory: t0_34 = cycles ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:71:5: missed: statement clobbers memory: convolve (image_43, out_45, n_38, m_40, &mask);
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:72:25: missed: statement clobbers memory: t1_28 = cycles ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:68:16: missed: statement clobbers memory: __builtin_memset (out_45, 0, _84);
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:70:25: missed: statement clobbers memory: t0_47 = cycles ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:71:5: missed: statement clobbers memory: convolve (image_43, out_45, n_38, m_40, &mask);
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:72:25: missed: statement clobbers memory: t1_50 = cycles ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:81:5: missed: statement clobbers memory: __builtin_puts (&"kernel convolution"[0]);
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:82:5: missed: statement clobbers memory: printf ("n %d\n", n_38);
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:83:5: missed: statement clobbers memory: printf ("m %d\n", m_40);
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:84:5: missed: statement clobbers memory: printf ("elapsed %llu\n", _27);
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:85:5: missed: statement clobbers memory: printf ("checksum %llu\n", sum_78);
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:86:5: missed: statement clobbers memory: __builtin_puts (&"status ok"[0]);
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:88:5: missed: statement clobbers memory: free (image_43);
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:89:5: missed: statement clobbers memory: free (out_45);
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:58:9: missed: statement clobbers memory: __builtin_puts (&"status alloc_failed"[0]);
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:57:16: note: ***** Analysis failed with vector mode V4SI
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:57:16: note: ***** The result for vector mode V16QI would be the same
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:57:16: note: ***** Re-trying analysis with vector mode V32QI
+/home/bd3/lvx-perf/lvx-kernels/lvx/convolution-main.c:57:16: note: ***** Analysis failed with vector mode V32QI
+/home/bd3/lvx-perf/lvx-kernels/src/convolution.c:70:23: missed: couldn't vectorize loop
+/home/bd3/lvx-perf/lvx-kernels/src/convolution.c:70:23: missed: not vectorized: multiple nested loops.
+/home/bd3/lvx-perf/lvx-kernels/src/convolution.c:71:27: missed: couldn't vectorize loop
+/home/bd3/lvx-perf/lvx-kernels/src/convolution.c:71:27: missed: not vectorized: multiple nested loops.
+/home/bd3/lvx-perf/lvx-kernels/src/convolution.c:72:31: missed: couldn't vectorize loop
+/home/bd3/lvx-perf/lvx-kernels/src/convolution.c:75:30: missed: not vectorized: complicated access pattern.
+/home/bd3/lvx-perf/lvx-kernels/src/convolution.c:73:35: missed: couldn't vectorize loop
+/home/bd3/lvx-perf/lvx-kernels/src/convolution.c:73:35: missed: Loop costings not worthwhile.
+/home/bd3/lvx-perf/lvx-kernels/src/convolution.c:54:1: note: vectorized 0 loops in function.
+/home/bd3/lvx-perf/lvx-kernels/src/convolution.c:74:42: note: ***** Analysis failed with vector mode V4SI
+/home/bd3/lvx-perf/lvx-kernels/src/convolution.c:74:42: note: ***** The result for vector mode V16QI would be the same
+/home/bd3/lvx-perf/lvx-kernels/src/convolution.c:74:42: note: ***** Re-trying analysis with vector mode V32QI
+/home/bd3/lvx-perf/lvx-kernels/src/convolution.c:74:42: note: ***** Analysis failed with vector mode V32QI
+/home/bd3/lvx-perf/lvx-kernels/src/convolution.c:78:27: note: ***** Analysis failed with vector mode VOID
+/home/bd3/lvx-perf/lvx-kernels/src/convolution.c:79:27: note: ***** Analysis failed with vector mode VOID
