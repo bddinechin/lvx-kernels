@@ -57,8 +57,16 @@ for kernel in "${kernels[@]}"; do
     fi
     echo "$kernel: oracle checksum $ref"
 
-    tsv="$HERE/results/$kernel-$ARCH-$OPT-n$N.tsv"
-    printf 'kernel\tarch\topt\tn\tspec\tvec\tcycles\tchecksum\tcorrect\tbundles_kernel\tinsns_kernel\tsimd_kernel\tcpu_model\ttoolchain\n' > "$tsv"
+    # The size tag names the extent that was actually swept, which differs
+    # per kernel -- a file called `-n128' for mandelbrot would describe
+    # nothing it was run at.
+    case "$kernel" in
+        convolution) tag="n$N" ;;
+        mandelbrot)  tag="${MB_WIDTH:-64}x${MB_HEIGHT:-64}i${MB_MAXITER:-64}" ;;
+        *)           tag="default" ;;
+    esac
+    tsv="$HERE/results/$kernel-$ARCH-$OPT-$tag.tsv"
+    printf 'kernel\tarch\topt\tsize\tspec\tvec\tcycles\tchecksum\tcorrect\tbundles_kernel\tinsns_kernel\tsimd_kernel\tcpu_model\ttoolchain\n' > "$tsv"
 
     for spec in 1 0; do
         for vec in vec novec; do
@@ -71,7 +79,7 @@ for kernel in "${kernels[@]}"; do
             [ "$corr" = yes ] || { [ "${STATIC_ONLY:-0}" = 1 ] && corr=n/a; }
             [ "$corr" = no ] && rc=1
             printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
-                "$kernel" "$ARCH" "$OPT" "$N" "$spec" "$vec" \
+                "$kernel" "$ARCH" "$OPT" "$tag" "$spec" "$vec" \
                 "${cyc:--}" "${sum:--}" "$corr" \
                 "$(get bundles_kernel)" "$(get insns_kernel)" \
                 "$(get simd_kernel)" \

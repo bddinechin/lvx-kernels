@@ -62,7 +62,28 @@ drv="$HERE/lvx/$KERNEL-main.c"
 [ -f "$src" ] || { echo "error: no such kernel: $src" >&2; exit 2; }
 [ -f "$drv" ] || { echo "error: no driver: $drv" >&2; exit 2; }
 
-DEFS="-DSPECIALIZE=$SPEC -DCONV_N=$N"
+# Per-kernel size macros. The shapes are upstream's; the extents are ours,
+# because upstream sizes for a native run (convolution specialises to an
+# 8192-wide image, mandelbrot to 768x512 at 256 iterations -- 100 million inner
+# iterations) and an ISS sweep has to finish.
+case "$KERNEL" in
+    convolution)
+        DEFS="-DSPECIALIZE=$SPEC -DCONV_N=$N"
+        ;;
+    mandelbrot)
+        DEFS="-DSPECIALIZE=$SPEC -DMB_WIDTH=${MB_WIDTH:-64}"
+        DEFS="$DEFS -DMB_HEIGHT=${MB_HEIGHT:-64} -DMB_MAXITER=${MB_MAXITER:-64}"
+        # `#pragma omp simd' needs -fopenmp-simd or GCC ignores it, and
+        # upstream's own makefiles pass no OpenMP flag -- so the pragma is
+        # decoration there. Off by default to stay faithful; on, it sets
+        # loop->safelen, which reaches LVX's CMS dependence graph.
+        DEFS="$DEFS -DMB_OMPSIMD=${OMPSIMD:-0}"
+        [ "${OMPSIMD:-0}" = 1 ] && DEFS="$DEFS -fopenmp-simd"
+        ;;
+    *)
+        DEFS="-DSPECIALIZE=$SPEC"
+        ;;
+esac
 
 # The host oracle. Built from the same two files, so a checksum difference is
 # the target's and not a different program's.
@@ -108,7 +129,7 @@ esac
 
 WD=$(mktemp -d); trap 'rm -rf "$WD"' EXIT
 
-echo "== $KERNEL $ARCH -$OPT $VEC SPEC=$SPEC N=$N =="
+echo "== $KERNEL $ARCH -$OPT $VEC SPEC=$SPEC ${N:+N=$N} ${OMPSIMD:+OMPSIMD=$OMPSIMD} =="
 
 # Which compiler produced this. Not decoration: lvx-gcc is rebuilt and
 # reinstalled in place while measurements are being taken -- that happened
@@ -154,6 +175,7 @@ echo "bundles_static $(grep -c ';;' "$WD/dis.txt")"
 # deriving it from the file name would be a guess.
 case "$KERNEL" in
     convolution) KERNELFN=convolve ;;
+    mandelbrot)  KERNELFN=mandelbrot_serial ;;
     *)           KERNELFN=$KERNEL ;;
 esac
 awk -v fn="$KERNELFN" '
@@ -177,4 +199,4 @@ export LVX_CPU
 echo "cpu_model $LVX_CPU"
 "$CSW/lvx-gem5/build/$GEM5BIN" --outdir="$WD/m5out" \
     "$CSW/lvx-gem5/tests/lvx/run_lvx.py" "$WD/$KERNEL.elf" 2>&1 \
-    | sed -n 's/^\(kernel\|n\|m\|elapsed\|checksum\|status\) /\1 /p'
+    | sed -n 's/^\(kernel\|n\|m\|width\|height\|maxiter\|elapsed\|checksum\|escaped_early\|saturated\|untouched\|status\) /\1 /p'

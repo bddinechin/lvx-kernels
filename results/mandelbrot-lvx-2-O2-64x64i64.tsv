@@ -1,0 +1,5 @@
+kernel	arch	opt	size	spec	vec	cycles	checksum	correct	bundles_kernel	insns_kernel	simd_kernel	cpu_model	toolchain
+mandelbrot	lvx-2	O2	64x64i64	1	vec	2192665	83524	yes	23	41	0	minor	17.0.0 20260627 (experimental)
+mandelbrot	lvx-2	O2	64x64i64	1	novec	2192665	83524	yes	23	41	0	minor	17.0.0 20260627 (experimental)
+mandelbrot	lvx-2	O2	64x64i64	0	vec	2196158	83524	yes	40	70	0	minor	17.0.0 20260627 (experimental)
+mandelbrot	lvx-2	O2	64x64i64	0	novec	2196158	83524	yes	40	70	0	minor	17.0.0 20260627 (experimental)

@@ -6,7 +6,7 @@ Siso, Wes Armour and Jeyarajan Thiyagalingam, *Evaluating Auto-Vectorizing
 Compilers through Objective Withdrawal of Useful Information*, ACM TACO 16(4),
 2019, [doi:10.1145/3356842](https://doi.org/10.1145/3356842).
 
-**Status: one kernel, `convolution`.** The suite is laid out for the rest.
+**Status: two kernels, `convolution` and `mandelbrot`.** The suite is laid out for the rest.
 
 ## Why a separate suite rather than more of `lvx-tsvc2`
 
@@ -108,6 +108,53 @@ measurement and is libc. The kernel's own count is zero in all four. Hence
 `lvx-polybench` and `lvx-tsvc2` both record: use `-fopt-info-vec-all` to learn
 whether a loop vectorized, never an instruction count.
 
+## What mandelbrot found: GCC declines at every level
+
+`mandelbrot`, lvx-2, `-O2`, 64x64 at 64 iterations, `LVX_CPU=minor`:
+
+| `SPEC` | `VEC` | kernel cycles | kernel bundles | SIMD in kernel |
+|---|---|---:|---:|---:|
+| 1 | vec | 2,192,665 | 23 | **0** |
+| 1 | novec | 2,192,665 | 23 | **0** |
+| 0 | vec | 2,196,158 | 40 | **0** |
+| 0 | novec | 2,196,158 | 40 | **0** |
+
+All four compute the oracle's checksum (83,524, with 1,091 pixels saturated
+and 3,005 escaping early -- the viewport really does diverge).
+
+**`vec` and `novec` are identical, to the cycle.** The vectorizer does nothing
+here, and `-fopt-info-vec-all` says why at each of the three levels: the `i`
+loop is an "unsupported outerloop form" -- it has the `it` loop inside it --
+one loop reports "multiple nested loops", and the innermost declines with
+"unsupported use in stmt" on the early-exit line, `it` being live after the
+loop. So every level refuses, for a different reason.
+
+**Which means this kernel does not yet ask the question it was ported for.**
+The hope was to find out whether GCC's vectorizer generates lvx-2's
+`comp*`/`blend*`/MASKM family for a divergent loop unaided. It never gets as
+far as needing a mask: it declines before masking is the issue. That is a real
+answer, and a negative one about this *source shape* rather than about LVX.
+
+**And the pragma is confirmed inert.** `OMPSIMD=0` and `OMPSIMD=1` produce
+byte-identical code. Upstream puts `#pragma omp simd` on the *outer* `j` loop,
+GCC does not vectorize outer loops, and upstream passes no OpenMP flag anyway
+-- so it is decoration in all three senses. The knob stays because switching
+it on sets `loop->safelen`, which reaches LVX's CMS dependence graph, and that
+is worth a probe even when the vectorizer is unmoved.
+
+**`SPEC` moves the code and not the clock.** 23 bundles against 40 -- 1.7x the
+static size -- for a 0.16% difference in cycles. The hot loop is the `it` loop,
+which does not depend on any of the withdrawn information; the constants only
+reach the addressing around it. A cleaner demonstration than convolution's
+that static size and dynamic cost are different questions.
+
+**To ask the masking question** the loop has to be restructured so the
+vectorizable loop is the innermost one: strip-mine `i` and run all lanes of
+the `it` loop under an active mask, the way ISPC does it. That is a different
+kernel rather than a flag, and it belongs beside this one as a second row --
+the shape `lvx-ssw` uses for its three Smith-Waterman rows and
+`lvx-turbopfor` for its three translation layers. Not written yet.
+
 ## The kernels are translated to C, and have to be
 
 Upstream is C++11. The LVX target has **no C++ standard library** — `#include
@@ -133,14 +180,10 @@ The loop nest is upstream's unchanged.
 
 ## What is next, in order
 
-1. **mandelbrot** — a per-pixel data-dependent `break`, i.e. divergent exit.
-   It asks whether GCC's vectorizer *generates* lvx-2's `comp*`/`blend*`/MASKM
-   family unaided; `lvx-ssw` exercises masks heavily but only through
-   hand-written SIMDe intrinsics. It also carries `#pragma omp simd`, which
-   `handoff-lvx-perf-tsvc.md` notes TSVC has none of and which LVX's CMS
-   machinery responds to. One thing to check rather than assume: upstream puts
-   the pragma on the *outer* loop with the inner one nested, and GCC generally
-   will not vectorize an outer loop.
+1. **a masked mandelbrot**, as a second row beside the faithful one: the `it`
+   loop strip-mined over `i` with an active mask, which is what would actually
+   ask whether GCC generates `comp*`/`blend*` for a divergent loop. The
+   faithful port establishes that it never reaches that question.
 2. **binomial** — a shrinking trip count over a WAR at distance 1, which is
    what `taild` and the partial-vector path exist for. Plus an FP divide in
    the loop.
