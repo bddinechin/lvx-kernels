@@ -1,0 +1,73 @@
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:37:5: missed: statement clobbers memory: __asm__ __volatile__("get %0 = $frcc
+	;;" : "=r" c_3 :  : "memory");
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:38:12: note: ***** Analysis failed with vector mode VOID
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:79:23: missed: couldn't vectorize loop
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:47:1: missed: not vectorized: unsupported use in stmt.
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:47:1: note: vectorized 0 loops in function.
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:49:19: missed: statement clobbers memory: w_34 = mb_width ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:50:19: missed: statement clobbers memory: h_36 = mb_height ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:51:23: missed: statement clobbers memory: maxit_38 = mb_maxiter ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:53:22: missed: statement clobbers memory: vlen_40 = mbm_vlen ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:65:16: missed: statement clobbers memory: out_42 = malloc (_5);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:73:25: missed: statement clobbers memory: t0_103 = cycles ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:74:5: missed: statement clobbers memory: mandelbrot_masked (-2.0e+0, -1.0e+0, 1.0e+0, 1.0e+0, w_34, h_36, maxit_38, out_42);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:75:25: missed: statement clobbers memory: t1_106 = cycles ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:85:5: missed: statement clobbers memory: __builtin_puts (&"kernel mandelbrot_masked"[0]);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:86:5: missed: statement clobbers memory: printf ("vlen %d\n", vlen_40);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:87:5: missed: statement clobbers memory: _75 = mbm_blockexit ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:87:5: missed: statement clobbers memory: printf ("blockexit %d\n", _75);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:88:5: missed: statement clobbers memory: printf ("width %d\n", w_34);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:89:5: missed: statement clobbers memory: printf ("height %d\n", h_36);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:90:5: missed: statement clobbers memory: printf ("maxiter %d\n", maxit_38);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:91:5: missed: statement clobbers memory: printf ("elapsed %llu\n", _74);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:92:5: missed: statement clobbers memory: printf ("checksum %llu\n", 0);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:93:5: missed: statement clobbers memory: printf ("escaped_early %d\n", 0);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:94:5: missed: statement clobbers memory: printf ("saturated %d\n", 0);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:97:5: missed: statement clobbers memory: printf ("untouched %d\n", 0);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:71:16: missed: statement clobbers memory: __builtin_memset (out_42, 255, _107);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:73:25: missed: statement clobbers memory: t0_44 = cycles ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:74:5: missed: statement clobbers memory: mandelbrot_masked (-2.0e+0, -1.0e+0, 1.0e+0, 1.0e+0, w_34, h_36, maxit_38, out_42);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:75:25: missed: statement clobbers memory: t1_47 = cycles ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:85:5: missed: statement clobbers memory: __builtin_puts (&"kernel mandelbrot_masked"[0]);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:86:5: missed: statement clobbers memory: printf ("vlen %d\n", vlen_40);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:87:5: missed: statement clobbers memory: _15 = mbm_blockexit ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:87:5: missed: statement clobbers memory: printf ("blockexit %d\n", _15);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:88:5: missed: statement clobbers memory: printf ("width %d\n", w_34);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:89:5: missed: statement clobbers memory: printf ("height %d\n", h_36);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:90:5: missed: statement clobbers memory: printf ("maxiter %d\n", maxit_38);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:91:5: missed: statement clobbers memory: printf ("elapsed %llu\n", _16);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:92:5: missed: statement clobbers memory: printf ("checksum %llu\n", sum_91);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:93:5: missed: statement clobbers memory: printf ("escaped_early %d\n", early_94);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:94:5: missed: statement clobbers memory: printf ("saturated %d\n", saturated_89);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:97:5: missed: statement clobbers memory: printf ("untouched %d\n", untouched_87);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:98:5: missed: statement clobbers memory: printf ("status %s\n", iftmp.0_29);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:100:5: missed: statement clobbers memory: free (out_42);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:67:9: missed: statement clobbers memory: __builtin_puts (&"status alloc_failed"[0]);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:59:9: missed: statement clobbers memory: printf ("width %d\n", w_34);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:60:9: missed: statement clobbers memory: printf ("vlen %d\n", vlen_40);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:61:9: missed: statement clobbers memory: __builtin_puts (&"status width_not_a_multiple_of_vlen"[0]);
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:47:1: note: ***** Analysis failed with vector mode V4SI
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:47:1: note: ***** The result for vector mode V16QI would be the same
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:47:1: note: ***** Re-trying analysis with vector mode V32QI
+/home/bd3/lvx-perf/lvx-kernels/lvx/mandelbrot_masked-main.c:47:1: note: ***** Analysis failed with vector mode V32QI
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:115:23: missed: couldn't vectorize loop
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:115:23: missed: not vectorized: loop nest containing two or more consecutive inner loops cannot be vectorized
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:118:29: missed: couldn't vectorize loop
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:118:29: missed: not vectorized: loop nest containing two or more consecutive inner loops cannot be vectorized
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:130:31: missed: couldn't vectorize loop
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:130:31: missed: not vectorized: loop nest containing two or more consecutive inner loops cannot be vectorized
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:140:35: missed: couldn't vectorize loop
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:140:35: missed: not vectorized: unsupported control flow in loop.
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:135:35: optimized: loop vectorized using 16 byte vectors and unroll factor 4
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:122:31: optimized: loop vectorized using 16 byte vectors and unroll factor 4
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:95:1: note: vectorized 2 loops in function.
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:127:24: missed: statement clobbers memory: __builtin_memset (&itc, 0, 16);
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:152:35: note: ***** Analysis failed with vector mode V4SF
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:152:35: note: ***** Skipping vector mode V16QI, which would repeat the analysis for V4SF
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:152:35: note: ***** Re-trying analysis with vector mode V32QI
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:152:35: note: ***** Analysis failed with vector mode V32QI
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:160:30: note: ***** Analysis failed with vector mode VOID
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:161:5: note: ***** Analysis failed with vector mode VOID
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:162:5: note: ***** Analysis failed with vector mode VOID
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:164:30: note: ***** Analysis failed with vector mode VOID
+/home/bd3/lvx-perf/lvx-kernels/src/mandelbrot_masked.c:165:35: note: ***** Analysis failed with vector mode VOID

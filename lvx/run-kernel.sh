@@ -70,7 +70,7 @@ case "$KERNEL" in
     convolution)
         DEFS="-DSPECIALIZE=$SPEC -DCONV_N=$N"
         ;;
-    mandelbrot)
+    mandelbrot|mandelbrot_masked)
         DEFS="-DSPECIALIZE=$SPEC -DMB_WIDTH=${MB_WIDTH:-64}"
         DEFS="$DEFS -DMB_HEIGHT=${MB_HEIGHT:-64} -DMB_MAXITER=${MB_MAXITER:-64}"
         # `#pragma omp simd' needs -fopenmp-simd or GCC ignores it, and
@@ -79,6 +79,11 @@ case "$KERNEL" in
         # loop->safelen, which reaches LVX's CMS dependence graph.
         DEFS="$DEFS -DMB_OMPSIMD=${OMPSIMD:-0}"
         [ "${OMPSIMD:-0}" = 1 ] && DEFS="$DEFS -fopenmp-simd"
+        # The masked row's own knobs: the lane count, and whether the block
+        # leaves the iteration loop once no lane of it is still inside.
+        if [ "$KERNEL" = mandelbrot_masked ]; then
+            DEFS="$DEFS -DMB_VLEN=${VLEN:-4} -DMB_BLOCKEXIT=${BLOCKEXIT:-1}"
+        fi
         ;;
     *)
         DEFS="-DSPECIALIZE=$SPEC"
@@ -175,7 +180,8 @@ echo "bundles_static $(grep -c ';;' "$WD/dis.txt")"
 # deriving it from the file name would be a guess.
 case "$KERNEL" in
     convolution) KERNELFN=convolve ;;
-    mandelbrot)  KERNELFN=mandelbrot_serial ;;
+    mandelbrot)        KERNELFN=mandelbrot_serial ;;
+    mandelbrot_masked) KERNELFN=mandelbrot_masked ;;
     *)           KERNELFN=$KERNEL ;;
 esac
 awk -v fn="$KERNELFN" '
@@ -199,4 +205,4 @@ export LVX_CPU
 echo "cpu_model $LVX_CPU"
 "$CSW/lvx-gem5/build/$GEM5BIN" --outdir="$WD/m5out" \
     "$CSW/lvx-gem5/tests/lvx/run_lvx.py" "$WD/$KERNEL.elf" 2>&1 \
-    | sed -n 's/^\(kernel\|n\|m\|width\|height\|maxiter\|elapsed\|checksum\|escaped_early\|saturated\|untouched\|status\) /\1 /p'
+    | sed -n 's/^\(kernel\|n\|m\|width\|height\|maxiter\|vlen\|blockexit\|elapsed\|checksum\|escaped_early\|saturated\|untouched\|status\) /\1 /p'

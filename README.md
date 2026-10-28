@@ -6,7 +6,7 @@ Siso, Wes Armour and Jeyarajan Thiyagalingam, *Evaluating Auto-Vectorizing
 Compilers through Objective Withdrawal of Useful Information*, ACM TACO 16(4),
 2019, [doi:10.1145/3356842](https://doi.org/10.1145/3356842).
 
-**Status: two kernels, `convolution` and `mandelbrot`.** The suite is laid out for the rest.
+**Status: `convolution`, `mandelbrot`, and `mandelbrot_masked` — the second a faithful port, the third the restructuring that makes the question answerable.** The suite is laid out for the rest.
 
 ## Why a separate suite rather than more of `lvx-tsvc2`
 
@@ -155,6 +155,70 @@ kernel rather than a flag, and it belongs beside this one as a second row --
 the shape `lvx-ssw` uses for its three Smith-Waterman rows and
 `lvx-turbopfor` for its three translation layers. Not written yet.
 
+## What the masked row found: the ISA's mask family, generated unaided
+
+`src/mandelbrot.c` establishes that GCC declines to vectorize upstream's nest
+at every level, so it never reaches the masking question.
+`src/mandelbrot_masked.c` asks it properly: the pixel loop strip-mined by
+VLEN, the iteration loop hoisted outside it, so the innermost loop is a
+fixed-length pass over lanes with no control flow. **Not upstream** — this is
+the second row, the shape `lvx-ssw` uses for its three Smith-Waterman rows.
+
+It produces the scalar kernel's checksum exactly (83,524, with the same 1,091
+saturated and 3,005 early), which is the proof the masking is right.
+
+**GCC vectorizes it, and reaches for the lane-mask family on its own:**
+
+```
+fcompwq.oge $r0 = $r16r17, $r0r1     ; packed FP compare to a lane mask
+blendzwq    $r0r1 = $r32r33, $r0     ; zeroing blend by that mask
+```
+
+beside `ffmawq` x2, `fmulwq`, `addwq`, `splatwq` x2 and `floatwq` — 13 SIMD
+instructions in the kernel against 1 unvectorized. `blendzwq` is worth
+naming: `lvx-csw/CLAUDE.md` records it as added on 2026-10-12 because it "does
+not read its destination, so it needs no all-zero operand to be materialised
+first… it is what a masked lane-wise operation's select should be, and what
+GCC's `cond_add` uses". Here it is, in auto-vectorized code, which is the
+first evidence in `lvx-perf` that the addition pays.
+
+lvx-2, `-O2`, 64x64 at 64 iterations, VLEN=4, `LVX_CPU=minor`:
+
+| row | `SPEC` | `VEC` | cycles | bundles | SIMD |
+|---|---|---|---:|---:|---:|
+| faithful | 1 | vec | 2,192,665 | 23 | 0 |
+| faithful | 1 | novec | 2,192,665 | 23 | 0 |
+| masked | 1 | vec | **3,224,117** | 51 | **13** |
+| masked | 1 | novec | 4,642,566 | 53 | 1 |
+| masked, no block exit | 1 | vec | 7,299,460 | 41 | 7 |
+| masked, no block exit | 1 | novec | 7,273,639 | 43 | 1 |
+
+Three results, and the third is the one to take seriously.
+
+**Vectorizing the masked row is worth 1.44x** (3.22M against 4.64M), the first
+row in this suite where the vectorizer helps at all. `SPEC` barely moves it:
+1.42x on the withheld side, the hot loop not depending on the withdrawn
+information.
+
+**Four lanes buy 1.44x, not 4x**, and the block-exit pair says where the rest
+went: with the exit off, the same code costs 7.30M and vectorizing buys
+nothing (0.996x). Running every lane of a block to the block's depth is a
+2.26x work amplification, and the block-level exit recovers over half of it.
+(Curiously GCC also vectorizes *less* without the exit — 7 SIMD instructions
+instead of 13 — so removing the `any` reduction cost the lane loop something
+too.)
+
+**And the restructuring is a net loss against the plain scalar nest**:
+3.22M against 2.19M, 1.47x slower even vectorized and even with the block
+exit. The mechanism is the amplification: the scalar kernel leaves each pixel
+the moment it escapes, averaging 20.4 iterations (83,524 / 4,096), while a
+block of four adjacent pixels usually contains one that saturates at 64, so
+most blocks run near 64. Roughly 3x the work against 4 lanes, less overhead,
+lands slightly behind. That is a finding about this *shape* at this
+`maxIterations`, not about the ISA — the mask family does what it should; what
+cannot pay is 4-wide SIMD against a 3x amplification. Lower `maxIterations`,
+or compaction rather than masking, would move it.
+
 ## The kernels are translated to C, and have to be
 
 Upstream is C++11. The LVX target has **no C++ standard library** — `#include
@@ -180,17 +244,13 @@ The loop nest is upstream's unchanged.
 
 ## What is next, in order
 
-1. **a masked mandelbrot**, as a second row beside the faithful one: the `it`
-   loop strip-mined over `i` with an active mask, which is what would actually
-   ask whether GCC generates `comp*`/`blend*` for a divergent loop. The
-   faithful port establishes that it never reaches that question.
-2. **binomial** — a shrinking trip count over a WAR at distance 1, which is
+1. **binomial** — a shrinking trip count over a WAR at distance 1, which is
    what `taild` and the partial-vector path exist for. Plus an FP divide in
    the loop.
-3. **black-scholes** — `logf`/`expf`/`sqrtf`: a vector-libm test, and the
+2. **black-scholes** — `logf`/`expf`/`sqrtf`: a vector-libm test, and the
    first benchmark in `lvx-perf` pointing at `lvx-sleef`. The branch inside
    `CND()` is an if-conversion test.
-4. **matrixmult** — `double`, 32x32 fixed: unroll-and-jam of a small known
+3. **matrixmult** — `double`, 32x32 fixed: unroll-and-jam of a small known
    matmul, distinct from PolyBench's large dense `gemm`.
 
 **Skip `stencil`** — `lvx-polybench/stencils` already covers that shape.

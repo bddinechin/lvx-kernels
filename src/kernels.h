@@ -29,4 +29,16 @@ int mb_width (void);
 int mb_height (void);
 int mb_maxiter (void);
 
+/* mandelbrot_masked: the same computation with the pixel loop strip-mined by
+ * VLEN and the iteration loop hoisted outside it, so the innermost loop is a
+ * fixed-length pass over lanes and the divergence becomes a mask. Not
+ * upstream -- see src/mandelbrot_masked.c for why it exists. Its output must
+ * equal mandelbrot_serial's exactly. */
+void mandelbrot_masked (float x0p, float y0p, float x1p, float y1p,
+                        int widthp, int heightp, int maxIterationsp,
+                        int output[]);
+
+int mbm_vlen (void);
+int mbm_blockexit (void);
+
 #endif /* LVX_KERNELS_H */
