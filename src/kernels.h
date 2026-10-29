@@ -51,4 +51,10 @@ void binomial_put_serial (float Sa[], float Xa[], float Ta[],
 
 int bn_steps (void);
 
+/* black_scholes: a European call by the closed form. No step count and no
+ * dimensions -- upstream withdraws only the aliasing for this one, so there is
+ * nothing for a size accessor to report beyond the driver's own count. */
+void black_scholes_serial (float Sa[], float Xa[], float Ta[], float ra[],
+                           float va[], float result[], int count);
+
 #endif /* LVX_KERNELS_H */

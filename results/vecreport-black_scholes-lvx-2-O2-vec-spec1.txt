@@ -1,0 +1,46 @@
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:44:5: missed: statement clobbers memory: __asm__ __volatile__("get %0 = $frcc
+	;;" : "=r" c_3 :  : "memory");
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:45:12: note: ***** Analysis failed with vector mode VOID
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:86:23: missed: couldn't vectorize loop
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:86:23: missed: not vectorized: unsupported control flow in loop.
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:67:23: optimized: loop vectorized using 32 byte vectors and unroll factor 8
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:52:1: note: vectorized 1 loops in function.
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:56:17: missed: statement clobbers memory: Sa_48 = malloc (256);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:57:17: missed: statement clobbers memory: Xa_50 = malloc (256);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:58:17: missed: statement clobbers memory: Ta_52 = malloc (256);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:59:17: missed: statement clobbers memory: ra_54 = malloc (256);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:60:17: missed: statement clobbers memory: va_56 = malloc (256);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:61:21: missed: statement clobbers memory: result_58 = malloc (256);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:77:25: missed: statement clobbers memory: t0_60 = cycles ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:78:5: missed: statement clobbers memory: black_scholes_serial (Sa_48, Xa_50, Ta_52, ra_54, va_56, result_58, 64);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:79:25: missed: statement clobbers memory: t1_63 = cycles ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:91:5: missed: statement clobbers memory: __builtin_puts (&"kernel black_scholes"[0]);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:92:5: missed: statement clobbers memory: printf ("count %d\n", 64);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:93:5: missed: statement clobbers memory: printf ("elapsed %llu\n", _34);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:94:5: missed: statement clobbers memory: printf ("checksum %llu\n", sum_98);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:95:5: missed: statement clobbers memory: printf ("unwritten %d\n", unwritten_96);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:96:5: missed: statement clobbers memory: printf ("status %s\n", iftmp.0_43);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:98:5: missed: statement clobbers memory: free (Sa_48);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:98:16: missed: statement clobbers memory: free (Xa_50);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:98:27: missed: statement clobbers memory: free (Ta_52);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:98:38: missed: statement clobbers memory: free (ra_54);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:98:49: missed: statement clobbers memory: free (va_56);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:98:60: missed: statement clobbers memory: free (result_58);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:63:9: missed: statement clobbers memory: __builtin_puts (&"status alloc_failed"[0]);
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:62:41: note: ***** Analysis failed with vector mode V4SF
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:62:41: note: ***** The result for vector mode V16QI would be the same
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:62:41: note: ***** Re-trying analysis with vector mode V32QI
+/home/bd3/lvx-perf/lvx-kernels/lvx/black_scholes-main.c:62:41: note: ***** Analysis failed with vector mode V32QI
+/home/bd3/lvx-perf/lvx-kernels/src/black_scholes.c:62:23: missed: statement clobbers memory: _14 = expf (_13);
+/home/bd3/lvx-perf/lvx-kernels/src/black_scholes.c:66:12: note: ***** Analysis failed with vector mode VOID
+/home/bd3/lvx-perf/lvx-kernels/src/black_scholes.c:82:23: missed: couldn't vectorize loop
+/home/bd3/lvx-perf/lvx-kernels/src/black_scholes.c:82:23: missed: not vectorized: unsupported control flow in loop.
+/home/bd3/lvx-perf/lvx-kernels/src/black_scholes.c:71:1: note: vectorized 0 loops in function.
+/home/bd3/lvx-perf/lvx-kernels/src/black_scholes.c:87:21: missed: statement clobbers memory: _9 = logf (_8);
+/home/bd3/lvx-perf/lvx-kernels/src/black_scholes.c:87:66: missed: statement clobbers memory: _29 = sqrtf (T_38);
+/home/bd3/lvx-perf/lvx-kernels/src/black_scholes.c:88:29: missed: statement clobbers memory: _60 = sqrtf (T_38);
+/home/bd3/lvx-perf/lvx-kernels/src/black_scholes.c:90:25: missed: statement clobbers memory: _19 = CND (d1_76);
+/home/bd3/lvx-perf/lvx-kernels/src/black_scholes.c:90:40: missed: statement clobbers memory: _23 = expf (_22);
+/home/bd3/lvx-perf/lvx-kernels/src/black_scholes.c:90:56: missed: statement clobbers memory: _25 = CND (d2_47);
+/home/bd3/lvx-perf/lvx-kernels/src/black_scholes.c:92:1: note: ***** Analysis failed with vector mode V4SF
+/home/bd3/lvx-perf/lvx-kernels/src/black_scholes.c:92:1: note: ***** Skipping vector mode V16QI, which would repeat the analysis for V4SF

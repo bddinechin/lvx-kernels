@@ -6,7 +6,7 @@ Siso, Wes Armour and Jeyarajan Thiyagalingam, *Evaluating Auto-Vectorizing
 Compilers through Objective Withdrawal of Useful Information*, ACM TACO 16(4),
 2019, [doi:10.1145/3356842](https://doi.org/10.1145/3356842).
 
-**Status: `convolution`, `mandelbrot`, `mandelbrot_masked` and `binomial`.** The suite is laid out for the rest.
+**Status: `convolution`, `mandelbrot`, `mandelbrot_masked`, `binomial` and `black_scholes`.** The suite is laid out for the rest.
 
 ## Why a separate suite rather than more of `lvx-tsvc2`
 
@@ -286,6 +286,62 @@ the step count is actually withheld and the axis collapses to `__restrict__`
 alone. Here the step count arrives as a parameter, as the siblings' withheld
 constants do.
 
+## What black-scholes found: four calls, and nothing else in the way
+
+The `i` loop carries no dependence — it is embarrassingly parallel — and the
+`CND` polynomial is plain arithmetic. So whether it vectorizes comes down to
+one question: can the compiler vectorize a call to the maths library?
+
+lvx-2, `-O2`, 64 options, `LVX_CPU=minor`:
+
+| `SPEC` | `VEC` | cycles | bundles | SIMD |
+|---|---|---:|---:|---:|
+| 1 | vec | 34,573 | 80 | 0 |
+| 1 | novec | 34,574 | 80 | 0 |
+| 0 | vec | 34,573 | 80 | 0 |
+| 0 | novec | 34,574 | 80 | 0 |
+
+One cycle apart across the whole sweep, and the kernel's code is byte-identical
+in all four. Nothing happens. (The "1 loop vectorized" the report shows is the
+driver's initialisation loop, outside the timed region — the trap this suite
+records in its `simd_kernel` column.)
+
+**The blockers, resolved one at a time, which is the useful part.** At plain
+`-O2` the vectorizer names each call it cannot see through:
+
+```
+missed: statement clobbers memory: _14 = expf (_13);
+missed: statement clobbers memory: _9  = logf (_8);
+missed: statement clobbers memory: _29 = sqrtf (T_38);
+missed: not vectorized: unsupported control flow in loop.
+```
+
+- **`sqrtf` is not the obstacle it appears to be.** LVX has `fsqrtw` and GCC
+  does emit it — along with an `errno` fallback *call*, and it is the call in
+  the IR that the vectorizer tripped over. `-fno-math-errno` removes the error
+  path (6 calls in the kernel become 4) and `fsqrtw` remains.
+- **The branch if-converts under `-ffast-math`.** `CND`'s `if (X > 0.f)` is
+  the "unsupported control flow"; with fast-math that complaint disappears and
+  the message becomes "unsupported SLP instances" instead.
+- **What no flag removes: 1 `logf` and 3 `expf` calls.** Confirmed by
+  disassembly under `-ffast-math`, where the kernel still holds exactly those
+  four and zero SIMD instructions.
+
+So this loop is parallel, its polynomial is vectorizable, its branch
+if-converts, and the *only* remaining obstacle is four transcendental calls
+with no vector form declared to GCC. **That is the case for `lvx-sleef`,
+quantified**: it is the first measurement in `lvx-perf` with a reason to ask
+about it, and the gap between this row and a vector-libm row is what sleef
+would be worth here. Nothing else needs to change for that gap to close.
+
+**`SPEC` is worth nothing at all here**, and for once that is expected rather
+than a finding: upstream withdraws no constants for this kernel, only
+`__restrict__`, and a loop that does not vectorize cannot care whether its
+arrays alias. Of the four ported, convolution carries all three information
+classes, binomial bounds and aliasing, mandelbrot bounds and arithmetic, and
+this one aliasing alone — worth knowing before reading a row where `SPEC`
+moves nothing.
+
 ## The kernels are translated to C, and have to be
 
 Upstream is C++11. The LVX target has **no C++ standard library** — `#include
@@ -311,10 +367,7 @@ The loop nest is upstream's unchanged.
 
 ## What is next, in order
 
-1. **black-scholes** — `logf`/`expf`/`sqrtf`: a vector-libm test, and the
-   first benchmark in `lvx-perf` pointing at `lvx-sleef`. The branch inside
-   `CND()` is an if-conversion test.
-2. **matrixmult** — `double`, 32x32 fixed: unroll-and-jam of a small known
+1. **matrixmult** — `double`, 32x32 fixed: unroll-and-jam of a small known
    matmul, distinct from PolyBench's large dense `gemm`.
 
 **Skip `stencil`** — `lvx-polybench/stencils` already covers that shape.

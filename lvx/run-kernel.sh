@@ -92,6 +92,11 @@ case "$KERNEL" in
         DEFS="-DSPECIALIZE=$SPEC -DBN_STEPS=${BN_STEPS:-64}"
         DEFS="$DEFS -DBN_COUNT=${BN_COUNT:-16}"
         ;;
+    black_scholes)
+        # Only the option count is a knob: upstream withdraws no constants for
+        # this kernel, so there is nothing else to parameterise.
+        DEFS="-DSPECIALIZE=$SPEC -DBS_COUNT=${BS_COUNT:-64}"
+        ;;
     *)
         DEFS="-DSPECIALIZE=$SPEC"
         ;;
@@ -190,6 +195,7 @@ case "$KERNEL" in
     mandelbrot)        KERNELFN=mandelbrot_serial ;;
     mandelbrot_masked) KERNELFN=mandelbrot_masked ;;
     binomial)          KERNELFN=binomial_put_serial ;;
+    black_scholes)     KERNELFN=black_scholes_serial ;;
     *)           KERNELFN=$KERNEL ;;
 esac
 awk -v fn="$KERNELFN" '

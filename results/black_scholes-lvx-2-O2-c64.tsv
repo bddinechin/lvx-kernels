@@ -1,0 +1,5 @@
+kernel	arch	opt	size	spec	vec	cycles	checksum	correct	bundles_kernel	insns_kernel	simd_kernel	cpu_model	toolchain	csw_rev	gcc_rev	gem5_rev	cc_mtime
+black_scholes	lvx-2	O2	c64	1	vec	34573	1115336	ok	80	132	0	minor	17.0.0 20260627 (experimental)	eaef7d5-dirty	4f912194043-dirty	099523f2cf	2026-10-29T14:13:25
+black_scholes	lvx-2	O2	c64	1	novec	34574	1115336	ok	80	132	0	minor	17.0.0 20260627 (experimental)	eaef7d5-dirty	4f912194043-dirty	099523f2cf	2026-10-29T14:13:25
+black_scholes	lvx-2	O2	c64	0	vec	34573	1115336	ok	80	132	0	minor	17.0.0 20260627 (experimental)	eaef7d5-dirty	4f912194043-dirty	099523f2cf	2026-10-29T14:13:25
+black_scholes	lvx-2	O2	c64	0	novec	34574	1115336	ok	80	132	0	minor	17.0.0 20260627 (experimental)	eaef7d5-dirty	4f912194043-dirty	099523f2cf	2026-10-29T14:13:25
