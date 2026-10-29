@@ -1,0 +1,5 @@
+kernel	arch	opt	size	spec	vec	cycles	checksum	correct	bundles_kernel	insns_kernel	simd_kernel	cpu_model	toolchain	csw_rev	gcc_rev	gem5_rev	cc_mtime
+binomial	lvx-2	O2	c16s64	1	vec	636567	234893	ok	104	168	12	minor	17.0.0 20260627 (experimental)	7b013af-dirty	d5d98a0e698-dirty	099523f2cf	2026-10-29T12:38:33
+binomial	lvx-2	O2	c16s64	1	novec	1178644	234893	ok	55	87	0	minor	17.0.0 20260627 (experimental)	7b013af-dirty	d5d98a0e698-dirty	099523f2cf	2026-10-29T12:38:33
+binomial	lvx-2	O2	c16s64	0	vec	637895	234893	ok	119	191	12	minor	17.0.0 20260627 (experimental)	7b013af-dirty	d5d98a0e698-dirty	099523f2cf	2026-10-29T12:38:33
+binomial	lvx-2	O2	c16s64	0	novec	1182772	234893	ok	70	113	0	minor	17.0.0 20260627 (experimental)	7b013af-dirty	d5d98a0e698-dirty	099523f2cf	2026-10-29T12:38:33

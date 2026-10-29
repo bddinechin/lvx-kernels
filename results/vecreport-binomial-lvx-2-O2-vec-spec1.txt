@@ -1,0 +1,53 @@
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:39:5: missed: statement clobbers memory: __asm__ __volatile__("get %0 = $frcc
+	;;" : "=r" c_3 :  : "memory");
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:40:12: note: ***** Analysis failed with vector mode VOID
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:82:23: missed: couldn't vectorize loop
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:82:23: missed: not vectorized: unsupported control flow in loop.
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:63:23: optimized: loop vectorized using 32 byte vectors and unroll factor 8
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:47:1: note: vectorized 1 loops in function.
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:50:24: missed: statement clobbers memory: nsteps_48 = bn_steps ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:52:17: missed: statement clobbers memory: Sa_50 = malloc (64);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:53:17: missed: statement clobbers memory: Xa_52 = malloc (64);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:54:17: missed: statement clobbers memory: Ta_54 = malloc (64);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:55:17: missed: statement clobbers memory: ra_56 = malloc (64);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:56:17: missed: statement clobbers memory: va_58 = malloc (64);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:57:21: missed: statement clobbers memory: result_60 = malloc (64);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:73:25: missed: statement clobbers memory: t0_62 = cycles ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:74:5: missed: statement clobbers memory: binomial_put_serial (Sa_50, Xa_52, Ta_54, ra_56, va_58, result_60, 16, nsteps_48);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:75:25: missed: statement clobbers memory: t1_65 = cycles ();
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:87:5: missed: statement clobbers memory: __builtin_puts (&"kernel binomial"[0]);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:88:5: missed: statement clobbers memory: printf ("count %d\n", 16);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:89:5: missed: statement clobbers memory: printf ("steps %d\n", nsteps_48);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:90:5: missed: statement clobbers memory: printf ("elapsed %llu\n", _34);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:91:5: missed: statement clobbers memory: printf ("checksum %llu\n", sum_101);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:92:5: missed: statement clobbers memory: printf ("unwritten %d\n", unwritten_99);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:93:5: missed: statement clobbers memory: printf ("status %s\n", iftmp.0_43);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:95:5: missed: statement clobbers memory: free (Sa_50);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:95:16: missed: statement clobbers memory: free (Xa_52);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:95:27: missed: statement clobbers memory: free (Ta_54);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:95:38: missed: statement clobbers memory: free (ra_56);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:95:49: missed: statement clobbers memory: free (va_58);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:95:60: missed: statement clobbers memory: free (result_60);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:59:9: missed: statement clobbers memory: __builtin_puts (&"status alloc_failed"[0]);
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:58:41: note: ***** Analysis failed with vector mode V4SF
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:58:41: note: ***** The result for vector mode V16QI would be the same
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:58:41: note: ***** Re-trying analysis with vector mode V32QI
+/home/bd3/lvx-perf/lvx-kernels/lvx/binomial-main.c:58:41: note: ***** Analysis failed with vector mode V32QI
+/home/bd3/lvx-perf/lvx-kernels/src/binomial.c:93:23: missed: couldn't vectorize loop
+/home/bd3/lvx-perf/lvx-kernels/src/binomial.c:93:23: missed: not vectorized: loop nest containing two or more consecutive inner loops cannot be vectorized
+/home/bd3/lvx-perf/lvx-kernels/src/binomial.c:114:31: missed: couldn't vectorize loop
+/home/bd3/lvx-perf/lvx-kernels/src/binomial.c:114:31: missed: not vectorized: inner-loop count not invariant.
+/home/bd3/lvx-perf/lvx-kernels/src/binomial.c:114:31: optimized: loop vectorized using 32 byte vectors and unroll factor 8
+/home/bd3/lvx-perf/lvx-kernels/src/binomial.c:114:31: optimized: epilogue loop vectorized using 16 byte vectors and unroll factor 4
+/home/bd3/lvx-perf/lvx-kernels/src/binomial.c:104:27: missed: couldn't vectorize loop
+/home/bd3/lvx-perf/lvx-kernels/src/binomial.c:105:26: missed: statement clobbers memory: upow_64 = powf (u_53, _17);
+/home/bd3/lvx-perf/lvx-kernels/src/binomial.c:77:1: note: vectorized 1 loops in function.
+/home/bd3/lvx-perf/lvx-kernels/src/binomial.c:99:29: missed: statement clobbers memory: _70 = sqrtf (dt_50);
+/home/bd3/lvx-perf/lvx-kernels/src/binomial.c:99:19: missed: statement clobbers memory: u_53 = expf (_11);
+/home/bd3/lvx-perf/lvx-kernels/src/binomial.c:101:22: missed: statement clobbers memory: disc_56 = expf (_12);
+/home/bd3/lvx-perf/lvx-kernels/src/binomial.c:105:26: missed: statement clobbers memory: upow_64 = powf (u_53, _17);
+/home/bd3/lvx-perf/lvx-kernels/src/binomial.c:77:1: note: ***** Analysis failed with vector mode V4SF
+/home/bd3/lvx-perf/lvx-kernels/src/binomial.c:77:1: note: ***** The result for vector mode V16QI would be the same
+/home/bd3/lvx-perf/lvx-kernels/src/binomial.c:77:1: note: ***** Re-trying analysis with vector mode V32QI
+/home/bd3/lvx-perf/lvx-kernels/src/binomial.c:77:1: note: ***** Analysis failed with vector mode V32QI
+/home/bd3/lvx-perf/lvx-kernels/src/binomial.c:121:30: note: ***** Analysis failed with vector mode VOID

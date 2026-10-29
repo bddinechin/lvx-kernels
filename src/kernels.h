@@ -41,4 +41,14 @@ void mandelbrot_masked (float x0p, float y0p, float x1p, float y1p,
 int mbm_vlen (void);
 int mbm_blockexit (void);
 
+/* binomial: an American put by backward induction over a binomial tree.
+ *
+ * `nsteps' is ignored on the specialised side, as elsewhere here. Upstream
+ * takes no such parameter -- see src/binomial.c for why this one does. */
+void binomial_put_serial (float Sa[], float Xa[], float Ta[],
+                          float ra[], float va[],
+                          float result[], int count, int nsteps);
+
+int bn_steps (void);
+
 #endif /* LVX_KERNELS_H */

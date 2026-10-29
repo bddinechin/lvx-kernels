@@ -6,7 +6,7 @@ Siso, Wes Armour and Jeyarajan Thiyagalingam, *Evaluating Auto-Vectorizing
 Compilers through Objective Withdrawal of Useful Information*, ACM TACO 16(4),
 2019, [doi:10.1145/3356842](https://doi.org/10.1145/3356842).
 
-**Status: `convolution`, `mandelbrot`, and `mandelbrot_masked` — the second a faithful port, the third the restructuring that makes the question answerable.** The suite is laid out for the rest.
+**Status: `convolution`, `mandelbrot`, `mandelbrot_masked` and `binomial`.** The suite is laid out for the rest.
 
 ## Why a separate suite rather than more of `lvx-tsvc2`
 
@@ -219,6 +219,73 @@ lands slightly behind. That is a finding about this *shape* at this
 cannot pay is 4-wide SIMD against a 3x amplification. Lower `maxIterations`,
 or compaction rather than masking, would move it.
 
+## What binomial found: the shrinking loop vectorizes, and `taild` does not fire
+
+The backward sweep is the shape nothing else here has:
+
+```c
+for (j = BINOMIAL_NUM-1; j >= 0; --j)
+    for (k = 0; k < j; ++k)
+        V[k] = ((1 - Pu) * V[k] + Pu * V[k+1]) / disc;
+```
+
+The `k` loop reads `V[k+1]` and writes `V[k]`, so iteration *k* reads what
+iteration *k+1* later overwrites — an **anti-dependence at distance 1**, not a
+flow dependence, and therefore vectorizable with a load-before-store. Every
+other recurrence in `lvx-perf` is a flow dependence. And the trip count
+**shrinks**: 63, 62, … 1, 0.
+
+lvx-2, `-O2`, 16 options at 64 steps, `LVX_CPU=minor`:
+
+| `SPEC` | `VEC` | cycles | bundles | SIMD |
+|---|---|---:|---:|---:|
+| 1 | vec | **636,567** | 104 | 12 |
+| 1 | novec | 1,178,644 | 55 | 0 |
+| 0 | vec | 637,895 | 119 | 12 |
+| 0 | novec | 1,182,772 | 70 | 0 |
+
+**Vectorizing is worth 1.85x** — the best ratio in this suite, and it confirms
+the anti-dependence is handled: `-fopt-info-vec-all` reports the `k` loop
+"vectorized using 32 byte vectors and unroll factor 8", with an "epilogue loop
+vectorized using 16 byte vectors". The SIMD is `splatwq` x6, `fmulwq` x3 and
+`ffmawq` x3 — arithmetic; the compares that remain are scalar.
+
+**But `taild` does not appear, and no mask does.** This is the loop whose trip
+count is mostly tail, which is what `taild` and the partial-vector/`while_ult`
+path exist for — and GCC reached for neither. It peeled a narrower epilogue
+instead: 8 lanes in the main body, 4 in the epilogue, scalar for the rest.
+That is the classic answer, not the masked one.
+
+It costs less than it sounds, which is worth saying so the gap is not
+overstated: with trip counts 63 down to 1, a vectorization factor of 8 covers
+every `j >= 8`, and those hold **1,988 of the 2,016** inner iterations — 98.6%.
+So epilogue peeling leaves only 1.4% of the work to narrower code here. The
+finding is about *which* mechanism GCC chose, not about a large loss; a
+`maxIterations` an order of magnitude smaller would move the balance and is
+the configuration to try next (`BN_STEPS=8`).
+
+**`SPEC` is worth 0.2%** (636,567 against 637,895) despite 104 bundles against
+119 — the same pattern as mandelbrot, for the same reason: the hot loop does
+not depend on what was withdrawn.
+
+### Two defects in upstream's binomial, both deliberately not reproduced
+
+Named because the port is otherwise faithful and because each is a defect
+rather than a choice.
+
+Upstream guards its unspecialised side with `#ifndef SPECIALIZE` where its
+siblings use `#if SPECIALIZE`. Built with `-DSPECIALIZE=0` the macro *is*
+defined, the guard is false, `BINOMIAL_NUM` keeps its zero initialiser, `V[]`
+is zero-length and **every loop runs zero trips** — a benchmark that measures
+nothing and still prints a result. It only works if `SPECIALIZE` is left
+undefined. This port uses `#if SPECIALIZE` throughout.
+
+And upstream's unspecialised side then assigns `BINOMIAL_NUM = 64` from a
+literal in the same function, which GCC constant-propagates — so nothing about
+the step count is actually withheld and the axis collapses to `__restrict__`
+alone. Here the step count arrives as a parameter, as the siblings' withheld
+constants do.
+
 ## The kernels are translated to C, and have to be
 
 Upstream is C++11. The LVX target has **no C++ standard library** — `#include
@@ -244,13 +311,10 @@ The loop nest is upstream's unchanged.
 
 ## What is next, in order
 
-1. **binomial** — a shrinking trip count over a WAR at distance 1, which is
-   what `taild` and the partial-vector path exist for. Plus an FP divide in
-   the loop.
-2. **black-scholes** — `logf`/`expf`/`sqrtf`: a vector-libm test, and the
+1. **black-scholes** — `logf`/`expf`/`sqrtf`: a vector-libm test, and the
    first benchmark in `lvx-perf` pointing at `lvx-sleef`. The branch inside
    `CND()` is an if-conversion test.
-3. **matrixmult** — `double`, 32x32 fixed: unroll-and-jam of a small known
+2. **matrixmult** — `double`, 32x32 fixed: unroll-and-jam of a small known
    matmul, distinct from PolyBench's large dense `gemm`.
 
 **Skip `stencil`** — `lvx-polybench/stencils` already covers that shape.

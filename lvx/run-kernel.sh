@@ -85,6 +85,13 @@ case "$KERNEL" in
             DEFS="$DEFS -DMB_VLEN=${VLEN:-4} -DMB_BLOCKEXIT=${BLOCKEXIT:-1}"
         fi
         ;;
+    binomial)
+        # The step count is upstream's 64; `count' -- the number of options --
+        # is the knob, the work being count x (64 powf calls + 2016 inner
+        # iterations).
+        DEFS="-DSPECIALIZE=$SPEC -DBN_STEPS=${BN_STEPS:-64}"
+        DEFS="$DEFS -DBN_COUNT=${BN_COUNT:-16}"
+        ;;
     *)
         DEFS="-DSPECIALIZE=$SPEC"
         ;;
@@ -182,6 +189,7 @@ case "$KERNEL" in
     convolution) KERNELFN=convolve ;;
     mandelbrot)        KERNELFN=mandelbrot_serial ;;
     mandelbrot_masked) KERNELFN=mandelbrot_masked ;;
+    binomial)          KERNELFN=binomial_put_serial ;;
     *)           KERNELFN=$KERNEL ;;
 esac
 awk -v fn="$KERNELFN" '
@@ -205,4 +213,4 @@ export LVX_CPU
 echo "cpu_model $LVX_CPU"
 "$CSW/lvx-gem5/build/$GEM5BIN" --outdir="$WD/m5out" \
     "$CSW/lvx-gem5/tests/lvx/run_lvx.py" "$WD/$KERNEL.elf" 2>&1 \
-    | sed -n 's/^\(kernel\|n\|m\|width\|height\|maxiter\|vlen\|blockexit\|elapsed\|checksum\|escaped_early\|saturated\|untouched\|status\) /\1 /p'
+    | sed -n 's/^\(kernel\|n\|m\|width\|height\|maxiter\|vlen\|blockexit\|count\|steps\|unwritten\|elapsed\|checksum\|escaped_early\|saturated\|untouched\|status\) /\1 /p'

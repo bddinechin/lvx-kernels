@@ -96,6 +96,7 @@ for kernel in "${kernels[@]}"; do
         mandelbrot_masked)
             tag="${MB_WIDTH:-64}x${MB_HEIGHT:-64}i${MB_MAXITER:-64}v${VLEN:-4}"
             [ "${BLOCKEXIT:-1}" = 0 ] && tag="$tag-noexit" ;;
+        binomial)    tag="c${BN_COUNT:-16}s${BN_STEPS:-64}" ;;
         *)           tag="default" ;;
     esac
     tsv="$HERE/results/$kernel-$ARCH-$OPT-$tag.tsv"
