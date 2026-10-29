@@ -109,9 +109,16 @@ for kernel in "${kernels[@]}"; do
                 echo "$kernel spec=$spec vec=$vec: run failed" >&2; rc=1; continue; }
             get() { printf '%s' "$out" | sed -n "s/^$1 \\(.*\\)/\\1/p" | head -1; }
             cyc=$(get elapsed); sum=$(get checksum)
-            corr=no; [ -n "$sum" ] && [ "$sum" = "$ref" ] && corr=yes
-            [ "$corr" = yes ] || { [ "${STATIC_ONLY:-0}" = 1 ] && corr=n/a; }
-            [ "$corr" = no ] && rc=1
+            # The vocabulary is lvx-perf's, not this suite's: bin/lvx-perf-trend
+            # scores a row only when `correct' reads ok or fp-*, and treats
+            # everything else as present-but-not-gated. This file used to write
+            # yes/no/n-a, which that gate read as ungated -- so every correct
+            # row was reported with a footnote saying it had not been checked.
+            # `static' is the spelling lvx-ssw already uses for a build-only
+            # row with no cycles behind it.
+            corr=mismatch; [ -n "$sum" ] && [ "$sum" = "$ref" ] && corr=ok
+            [ "$corr" = ok ] || { [ "${STATIC_ONLY:-0}" = 1 ] && corr=static; }
+            [ "$corr" = mismatch ] && rc=1
             printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
                 "$kernel" "$ARCH" "$OPT" "$tag" "$spec" "$vec" \
                 "${cyc:--}" "${sum:--}" "$corr" \

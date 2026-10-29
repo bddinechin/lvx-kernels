@@ -1,5 +1,5 @@
 kernel	arch	opt	size	spec	vec	cycles	checksum	correct	bundles_kernel	insns_kernel	simd_kernel	cpu_model	toolchain	csw_rev	gcc_rev	gem5_rev	cc_mtime
-convolution	lvx-2	O2	n128	1	vec	2039070	23816016	yes	20	34	0	minor	17.0.0 20260627 (experimental)	7b013af	d5d98a0e698	099523f2cf	2026-10-28T22:13:09
-convolution	lvx-2	O2	n128	1	novec	2025215	23816016	yes	25	43	0	minor	17.0.0 20260627 (experimental)	7b013af	d5d98a0e698	099523f2cf	2026-10-28T22:13:09
-convolution	lvx-2	O2	n128	0	vec	1816534	23816016	yes	31	65	0	minor	17.0.0 20260627 (experimental)	7b013af	d5d98a0e698	099523f2cf	2026-10-28T22:13:09
-convolution	lvx-2	O2	n128	0	novec	2255780	23816016	yes	31	65	0	minor	17.0.0 20260627 (experimental)	7b013af	d5d98a0e698	099523f2cf	2026-10-28T22:13:09
+convolution	lvx-2	O2	n128	1	vec	2039070	23816016	ok	20	34	0	minor	17.0.0 20260627 (experimental)	7b013af	d5d98a0e698	099523f2cf	2026-10-28T22:13:09
+convolution	lvx-2	O2	n128	1	novec	2025215	23816016	ok	25	43	0	minor	17.0.0 20260627 (experimental)	7b013af	d5d98a0e698	099523f2cf	2026-10-28T22:13:09
+convolution	lvx-2	O2	n128	0	vec	1816534	23816016	ok	31	65	0	minor	17.0.0 20260627 (experimental)	7b013af	d5d98a0e698	099523f2cf	2026-10-28T22:13:09
+convolution	lvx-2	O2	n128	0	novec	2255780	23816016	ok	31	65	0	minor	17.0.0 20260627 (experimental)	7b013af	d5d98a0e698	099523f2cf	2026-10-28T22:13:09
