@@ -40,6 +40,36 @@ while [ $# -gt 0 ]; do
 done
 [ ${#kernels[@]} -gt 0 ] || kernels=(convolution)
 
+# lvx-perf's bin/lvx-rev-stamp owns the provenance columns, and is called
+# rather than copied: this suite is BSD-3-Clause and lvx-perf is Apache-2.0
+# WITH LLVM-exception, so executing it keeps the licences apart, exactly as
+# lvx/run-kernel.sh already does with bin/lvx-csw-path.
+#
+# The stamp is taken PER ROW, not once per sweep. The hazard it exists for is
+# a toolchain reinstalled in place midway -- which happened to this suite
+# between two of its four configurations -- and only a per-row stamp shows it.
+super=$(git -C "$HERE" rev-parse --show-superproject-working-tree 2>/dev/null) || super=
+STAMP=
+[ -n "$super" ] && [ -x "$super/bin/lvx-rev-stamp" ] && STAMP="$super/bin/lvx-rev-stamp"
+
+# Only reached in a standalone checkout with no superproject. Both halves come
+# from this one array so they cannot disagree on width; `unknown' is a weaker
+# record, and lvx-perf-import is what refuses to call it exact.
+stamp_cols=(csw_rev gcc_rev gem5_rev cc_mtime)
+stamp_header() {
+    if [ -n "$STAMP" ]; then "$STAMP" --tsv-header
+    else (IFS=$'\t'; printf '%s\n' "${stamp_cols[*]}"); fi
+}
+stamp_row() {
+    if [ -n "$STAMP" ]; then
+        "$STAMP" --tsv-row "${csw_args[@]+"${csw_args[@]}"}"
+    else
+        local u=() c
+        for c in "${stamp_cols[@]}"; do u+=(unknown); done
+        (IFS=$'\t'; printf '%s\n' "${u[*]}")
+    fi
+}
+
 mkdir -p "$HERE/results"
 rc=0
 
@@ -69,7 +99,8 @@ for kernel in "${kernels[@]}"; do
         *)           tag="default" ;;
     esac
     tsv="$HERE/results/$kernel-$ARCH-$OPT-$tag.tsv"
-    printf 'kernel\tarch\topt\tsize\tspec\tvec\tcycles\tchecksum\tcorrect\tbundles_kernel\tinsns_kernel\tsimd_kernel\tcpu_model\ttoolchain\n' > "$tsv"
+    printf 'kernel\tarch\topt\tsize\tspec\tvec\tcycles\tchecksum\tcorrect\tbundles_kernel\tinsns_kernel\tsimd_kernel\tcpu_model\ttoolchain\t%s\n' \
+        "$(stamp_header)" > "$tsv"
 
     for spec in 1 0; do
         for vec in vec novec; do
@@ -81,12 +112,13 @@ for kernel in "${kernels[@]}"; do
             corr=no; [ -n "$sum" ] && [ "$sum" = "$ref" ] && corr=yes
             [ "$corr" = yes ] || { [ "${STATIC_ONLY:-0}" = 1 ] && corr=n/a; }
             [ "$corr" = no ] && rc=1
-            printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
+            printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
                 "$kernel" "$ARCH" "$OPT" "$tag" "$spec" "$vec" \
                 "${cyc:--}" "${sum:--}" "$corr" \
                 "$(get bundles_kernel)" "$(get insns_kernel)" \
                 "$(get simd_kernel)" \
-                "$(get cpu_model)" "$(get toolchain)" >> "$tsv"
+                "$(get cpu_model)" "$(get toolchain)" \
+                "$(stamp_row)" >> "$tsv"
         done
     done
     echo "  -> $tsv"
