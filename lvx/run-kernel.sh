@@ -164,6 +164,7 @@ vecreport=""
 t0=$SECONDS
 # shellcheck disable=SC2086
 "$BIN/lvx-mbr-gcc" -$OPT -march="$ARCH" $vecflag $vecreport $DEFS -I"$HERE/src" -w \
+    ${LVX_EXTRA_CFLAGS:-} \
     -T lvx-sim.ld -L"$LDSCRIPTS" \
     -o "$WD/$KERNEL.elf" "$drv" "$src" -lm \
     || { echo "BUILD FAIL"; exit 1; }

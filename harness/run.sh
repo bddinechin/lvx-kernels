@@ -9,6 +9,8 @@
 #   ./harness/run.sh --csw /path/to/lvx-csw
 #   ARCH=lvx-1 ./harness/run.sh           the scalar core
 #   STATIC_ONLY=1 ./harness/run.sh        build and static metrics, no ISS
+#   LVX_EXTRA_CFLAGS='-mcms-probe' ./harness/run.sh   # CROSS-only extra flags
+#                                         (never reaches the x86 oracle)
 #
 # Writes results/<kernel>-<arch>-<opt>-n<N>.tsv: four rows, SPEC x VEC, with
 # the cycles, the checksum, the static size and the toolchain that produced
