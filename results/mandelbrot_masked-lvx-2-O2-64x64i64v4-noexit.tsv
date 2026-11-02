@@ -1,5 +1,5 @@
 kernel	arch	opt	size	spec	vec	cycles	checksum	correct	bundles_kernel	insns_kernel	simd_kernel	cpu_model	toolchain	csw_rev	gcc_rev	gem5_rev	cc_mtime
-mandelbrot_masked	lvx-2	O2	64x64i64v4-noexit	1	vec	7299460	83524	ok	41	77	7	minor	17.0.0 20260627 (experimental)	7b013af	d5d98a0e698	099523f2cf	2026-10-28T22:13:09
-mandelbrot_masked	lvx-2	O2	64x64i64v4-noexit	1	novec	7273639	83524	ok	43	83	1	minor	17.0.0 20260627 (experimental)	7b013af	d5d98a0e698	099523f2cf	2026-10-28T22:13:09
-mandelbrot_masked	lvx-2	O2	64x64i64v4-noexit	0	vec	7299577	83524	ok	48	100	8	minor	17.0.0 20260627 (experimental)	7b013af	d5d98a0e698	099523f2cf	2026-10-28T22:13:09
-mandelbrot_masked	lvx-2	O2	64x64i64v4-noexit	0	novec	7272771	83524	ok	47	101	1	minor	17.0.0 20260627 (experimental)	7b013af	d5d98a0e698	099523f2cf	2026-10-28T22:13:09
+mandelbrot_masked	lvx-2	O2	64x64i64v4-noexit	1	vec	7299389	83524	ok	41	77	7	minor	17.0.0 20260627 (experimental)	9bb45ab	ddb90ae5f68	81c61f43f8	2026-11-02T15:23:26
+mandelbrot_masked	lvx-2	O2	64x64i64v4-noexit	1	novec	7273552	83524	ok	44	83	1	minor	17.0.0 20260627 (experimental)	9bb45ab	ddb90ae5f68	81c61f43f8	2026-11-02T15:23:26
+mandelbrot_masked	lvx-2	O2	64x64i64v4-noexit	0	vec	7299548	83524	ok	48	100	8	minor	17.0.0 20260627 (experimental)	9bb45ab	ddb90ae5f68	81c61f43f8	2026-11-02T15:23:26
+mandelbrot_masked	lvx-2	O2	64x64i64v4-noexit	0	novec	7272738	83524	ok	48	101	1	minor	17.0.0 20260627 (experimental)	9bb45ab	ddb90ae5f68	81c61f43f8	2026-11-02T15:23:26
