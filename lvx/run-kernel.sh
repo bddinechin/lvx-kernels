@@ -171,8 +171,10 @@ t0=$SECONDS
 echo "compile_seconds $((SECONDS - t0))"
 
 if [ "${VECREPORT:-0}" = 1 ] && [ -f "$WD/vec.txt" ]; then
-    rep="$HERE/results/vecreport-$KERNEL-$ARCH-$OPT-$VEC-spec$SPEC.txt"
-    mkdir -p "$HERE/results"; cp "$WD/vec.txt" "$rep"
+    # RESULTS_DIR applies here too, or a VECREPORT=1 probe would still land
+    # in the committed results/ while harness/run.sh's TSVs went to scratch.
+    rep="${RESULTS_DIR:-$HERE/results}/vecreport-$KERNEL-$ARCH-$OPT-$VEC-spec$SPEC.txt"
+    mkdir -p "$(dirname "$rep")"; cp "$WD/vec.txt" "$rep"
     echo "vec_loops_vectorized $(grep -c 'loop vectorized' "$rep" || true)"
     echo "vec_report $rep"
 fi

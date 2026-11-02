@@ -89,7 +89,14 @@ stamp_row() {
     fi
 }
 
-mkdir -p "$HERE/results"
+# RESULTS_DIR redirects the TSVs somewhere else, so a throwaway run cannot
+# clobber the committed baseline. A re-run of a configuration REPLACES its
+# file, by design -- but that makes a one-line probe destructive: checking
+# that a compiler flag reaches the compiler at all needs a build to FAIL,
+# and the failing rows then overwrite real numbers. Probe into a scratch
+# directory instead:
+#   RESULTS_DIR=$(mktemp -d) LVX_EXTRA_CFLAGS=-mbogus ./harness/run.sh
+outdir="${RESULTS_DIR:-$HERE/results}"; mkdir -p "$outdir"
 rc=0
 
 for kernel in "${kernels[@]}"; do
@@ -119,7 +126,7 @@ for kernel in "${kernels[@]}"; do
         black_scholes) tag="c${BS_COUNT:-64}" ;;
         *)           tag="default" ;;
     esac
-    tsv="$HERE/results/$kernel-$ARCH-$OPT-$tag.tsv"
+    tsv="$outdir/$kernel-$ARCH-$OPT-$tag.tsv"
     printf 'kernel\tarch\topt\tsize\tspec\tvec\tcycles\tchecksum\tcorrect\tbundles_kernel\tinsns_kernel\tsimd_kernel\tcpu_model\ttoolchain\t%s\n' \
         "$(stamp_header)" > "$tsv"
 
